@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Admin Dashboard</h1>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Users</h3>
+        <p class="stat-value">{{ total_users }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Total Tasks</h3>
+        <p class="stat-value">{{ total_tasks }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Completed Today</h3>
+        <p class="stat-value">{{ completed_today }}</p>
+    </div>
+</div>
+
+<div class="admin-section">
+    <div class="card">
+        <h3>Manual Resets</h3>
+        <div class="reset-actions">
+            <form method="POST" action="{{ url_for('manual_reset_tasks', category='daily') }}" class="inline-form">
+                <button type="submit" class="btn btn-outline">Reset Daily</button>
+            </form>
+            <form method="POST" action="{{ url_for('manual_reset_tasks', category='weekly') }}" class="inline-form">
+                <button type="submit" class="btn btn-outline">Reset Weekly</button>
+            </form>
+            <form method="POST" action="{{ url_for('manual_reset_tasks', category='monthly') }}" class="inline-form">
+                <button type="submit" class="btn btn-outline">Reset Monthly</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="admin-grid">
+    <div class="card">
+        <h3>User Management</h3>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td><span class="badge {% if user.role == 'admin' %}badge-admin{% else %}badge-user{% endif %}">{{ user.role }}</span></td>
+                        <td>
+                            {% if user.is_active_user %}
+                                <span class="status-indicator status-active">Active</span>
+                            {% else %}
+                                <span class="status-indicator status-disabled">Disabled</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                {% if user.role != 'admin' %}
+                                    <form method="POST" action="{{ url_for('toggle_user', user_id=user.id) }}" class="inline-form">
+                                        <button type="submit" class="btn btn-sm {% if user.is_active_user %}btn-warning{% else %}btn-success{% endif %}">
+                                            {% if user.is_active_user %}Disable{% else %}Enable{% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" onsubmit="return confirm('Are you sure you want to delete this user?');" class="inline-form">
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Most Active Users</h3>
+        <ul class="ranking-list">
+            {% for user in top_users %}
+            <li>
+                <span class="ranking-name">{{ user.username }}</span>
+                <span class="ranking-score">{{ user.task_count }} tasks</span>
+            </li>
+            {% else %}
+            <li>No data available</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

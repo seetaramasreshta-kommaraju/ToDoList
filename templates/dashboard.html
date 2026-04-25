@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>My Tasks</h1>
+    <div class="progress-container overall-progress">
+        <div class="progress-label">
+            <span>Overall Progress</span>
+            <span id="overall-progress-text">{{ progress.overall }}%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="overall-progress-fill" style="width: {{ progress.overall }}%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="add-task-section">
+    <div class="card">
+        <h3>Add New Task</h3>
+        <form method="POST" action="{{ url_for('add_task') }}" class="add-task-form">
+            <input type="text" name="title" placeholder="Task title..." required>
+            <input type="text" name="description" placeholder="Optional description...">
+            <select name="category" required>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+
+<div class="tasks-grid">
+    <!-- Daily Tasks -->
+    <div class="task-category-card">
+        <div class="category-header">
+            <h3>Daily</h3>
+            <span class="reset-time">Resets at midnight</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill cat-fill-daily" style="width: {{ progress.daily }}%;"></div>
+            </div>
+        </div>
+        <div class="task-list" id="list-daily">
+            {% for task in daily_tasks %}
+                <div class="task-item {% if task.is_completed %}completed{% endif %}" data-id="{{ task.id }}" data-category="daily">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="task-check" {% if task.is_completed %}checked{% endif %}>
+                        <span class="checkmark"></span>
+                    </label>
+                    <div class="task-content">
+                        <span class="task-title">{{ task.title }}</span>
+                        {% if task.description %}
+                            <span class="task-desc">{{ task.description }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="icon-btn delete-btn" aria-label="Delete task"><i class="ph ph-trash"></i></button>
+                </div>
+            {% else %}
+                <p class="empty-state">No daily tasks.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Weekly Tasks -->
+    <div class="task-category-card">
+        <div class="category-header">
+            <h3>Weekly</h3>
+            <span class="reset-time">Resets Monday</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill cat-fill-weekly" style="width: {{ progress.weekly }}%;"></div>
+            </div>
+        </div>
+        <div class="task-list" id="list-weekly">
+            {% for task in weekly_tasks %}
+                <div class="task-item {% if task.is_completed %}completed{% endif %}" data-id="{{ task.id }}" data-category="weekly">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="task-check" {% if task.is_completed %}checked{% endif %}>
+                        <span class="checkmark"></span>
+                    </label>
+                    <div class="task-content">
+                        <span class="task-title">{{ task.title }}</span>
+                        {% if task.description %}
+                            <span class="task-desc">{{ task.description }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="icon-btn delete-btn" aria-label="Delete task"><i class="ph ph-trash"></i></button>
+                </div>
+            {% else %}
+                <p class="empty-state">No weekly tasks.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Monthly Tasks -->
+    <div class="task-category-card">
+        <div class="category-header">
+            <h3>Monthly</h3>
+            <span class="reset-time">Resets 1st of month</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill cat-fill-monthly" style="width: {{ progress.monthly }}%;"></div>
+            </div>
+        </div>
+        <div class="task-list" id="list-monthly">
+            {% for task in monthly_tasks %}
+                <div class="task-item {% if task.is_completed %}completed{% endif %}" data-id="{{ task.id }}" data-category="monthly">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" class="task-check" {% if task.is_completed %}checked{% endif %}>
+                        <span class="checkmark"></span>
+                    </label>
+                    <div class="task-content">
+                        <span class="task-title">{{ task.title }}</span>
+                        {% if task.description %}
+                            <span class="task-desc">{{ task.description }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="icon-btn delete-btn" aria-label="Delete task"><i class="ph ph-trash"></i></button>
+                </div>
+            {% else %}
+                <p class="empty-state">No monthly tasks.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
