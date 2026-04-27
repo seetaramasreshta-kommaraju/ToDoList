@@ -299,4 +299,5 @@ def manual_reset_tasks(category):
 
 if __name__ == '__main__':
     # debug=False in production; set DEBUG=1 env var for local dev
-    app.run(debug=os.environ.get('DEBUG', '0') == '1')
+    app.run(host='0.0.0.0', port=5000, debug=os.environ.get('DEBUG', '0') == '1')
+
